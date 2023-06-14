@@ -1,0 +1,10 @@
+
+<a href="/">
+    <h1>Coursera</h1>
+</a>
+
+<form action="{% url 'home' %}" method="GET">
+    <input type="text" name="q" placeholder="Search Competitions...">
+</form>
+{% block content %}
+{% endblock content %}

@@ -1,0 +1,52 @@
+{% extends 'navbar.html' %}
+{% block content %}
+
+<style>
+    .main_container{
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+    }
+
+    .container {
+        margin-left: 10%;
+    }
+
+</style>
+
+<div class="main_container">
+    <div class="search_bar">
+        <h2>Browse Courses</h2>
+        <hr>
+        {% for t in topic %}
+            <a href="{% url 'home' %}?q={{t.name}}">{{ t.name }}</a>
+            <br><br>
+        {% endfor %}
+    </div>
+    
+    <div class="container">
+    
+        <div class="action_container">
+            <ul>
+                <li>
+                    <a href="{% url 'create-comp' %}">Create Competition</a>
+                </li>
+            </ul>
+        </div>
+    
+        <div class="room_container">
+            <p>{{ cc }} competitions are available</p><br>
+            {% for c in competitions %}
+            {% if c.host != null %}
+                <h3> <a href="{% url 'compinfo' c.id %}">{{ c.title }}</a> </h3>
+                <p>created by {{ c.host.username }}</p>
+                <a href="{% url 'update-comp' c.id %}">edit </a> &nbsp;&nbsp;&nbsp;
+                <a href="{% url 'delete' c.id %}">delete</a>
+                <hr>
+                {% endif %}
+            {% endfor %}
+        </div>
+    
+    </div>
+</div>
+
+{% endblock %}
