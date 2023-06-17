@@ -1,0 +1,46 @@
+{% include 'navbar.html' %}
+
+<div class="container">
+    {% if page == 'login' %}
+        <form action="" method="POST">
+            {% csrf_token %}
+            <label for="username">Username</label>
+            <input type="text" placeholder="username" type="text">
+
+            <label for="password">Password</label>
+            <input type="text" placeholder="password" type="password">
+
+            <input type="submit" value="login">
+        </form>
+
+        <p>
+            Haven't signed up yet?
+        </p>
+
+        <a href="{% url 'register_page' %}">signup</a>
+    {% endif %}
+
+    {% if page == 'register' %}
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <input type="submit" value="Signup">
+        </form>
+
+        <p>
+            Already have an account?
+        </p>
+
+        <a href="{% url 'login_page' %}">login</a>
+    {% endif %}
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    
+</div>

@@ -6,5 +6,19 @@
 <form action="{% url 'home' %}" method="GET">
     <input type="text" name="q" placeholder="Search Competitions...">
 </form>
+
+<ul>
+    {% if request.user.is_authenticated %}
+    <li>
+        <a href="{% url 'logout_user' %}">Logout</a>
+    </li>
+    {% else %}
+    <li>
+        <a href="login/">Login</a>
+    </li>
+    {% endif %}
+</ul>
+
 {% block content %}
+
 {% endblock content %}

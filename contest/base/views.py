@@ -1,6 +1,11 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db.models import Q
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 
 from .models import Competition, Topic
 from .forms import CompetitionForm
@@ -24,6 +29,7 @@ def compinfo(request, pk):
     context = {'competition': room}
     return render(request, 'base/room.html', context)
 
+@login_required(login_url='login')
 def create_competition(request):
     form = CompetitionForm()
     
@@ -35,9 +41,13 @@ def create_competition(request):
     context = {'form': form}
     return render(request, 'base/competition_form.html', context)
 
+
 def update_competition(request, pk):
     comp = Competition.objects.get(id=pk)
     form = CompetitionForm(instance=comp)
+
+    if request.user != comp.host:
+        return HttpResponse('not yours bitch!')
 
     if request.method == 'POST':
         form = CompetitionForm(request.POST, instance=comp)
@@ -57,3 +67,50 @@ def delete_page(request, pk):
         return redirect('home')
 
     return render(request, 'base/delete.html', context)
+
+def login_page(request):
+    page = 'login'
+    if request.user.is_authenticated:
+        return redirect('')
+    
+    if request.method == 'POST':
+        username = request.POST.get('username').lower()
+        password = request.POST.get('password')
+
+        try:
+            user = User.objects.get(username=username)
+        except:
+            messages.error(request, 'User does not exist')
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            user.login(request, user)
+            return redirect('')
+        else:
+            messages.error(request, 'Access denied')
+
+    context = {'page': page}
+    return render(request, 'base/login_register.html', context)
+
+def register_user(request):
+    page = 'register'
+    form = UserCreationForm()
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            login(request, user)
+            return redirect('')
+        
+        else:
+            messages.error(request, 'An error occured')
+
+    context = {'form': form, 'page': page}
+    return render(request, 'base/login_register.html', context)
+
+def logout_user(request):
+    logout(request)
+    return redirect('')
