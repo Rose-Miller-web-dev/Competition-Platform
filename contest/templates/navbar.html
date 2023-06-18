@@ -9,6 +9,7 @@
 
 <ul>
     {% if request.user.is_authenticated %}
+    <p>Hi {{ request.user.username }}</p>
     <li>
         <a href="{% url 'logout_user' %}">Logout</a>
     </li>

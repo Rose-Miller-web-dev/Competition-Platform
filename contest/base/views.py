@@ -7,8 +7,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import Competition, Topic
-from .forms import CompetitionForm
+from .models import Competition, Topic, Comment
+from .forms import CreateCompetitionForm, UpdateCompetitionForm
 
 # Create your views here.
 
@@ -25,16 +25,26 @@ def home(request):
 
 def compinfo(request, pk):
     room = Competition.objects.get(id=pk)
-    
-    context = {'competition': room}
+    comments = room.comment_set.all()
+    context = {'competition': room, 'comments': comments}
     return render(request, 'base/room.html', context)
+
+def user_profile(request, pk):
+    user = User.objects.get(id=pk)
+    awards = user.award_set.all()
+    award_count = awards.count()
+    created_competitions = user.competition_set.all()
+    context = { 'user': user, 'awards': awards, 'created_competitions': created_competitions,
+               'award_count': award_count }
+    
+    return render(request, 'base/user_profile.html', context)
 
 @login_required(login_url='login')
 def create_competition(request):
-    form = CompetitionForm()
+    form = CreateCompetitionForm()
     
     if request.method == 'POST':
-        form = CompetitionForm(request.POST)
+        form = CreateCompetitionForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('home')
@@ -44,13 +54,13 @@ def create_competition(request):
 
 def update_competition(request, pk):
     comp = Competition.objects.get(id=pk)
-    form = CompetitionForm(instance=comp)
+    form = UpdateCompetitionForm(instance=comp)
 
     if request.user != comp.host:
         return HttpResponse('not yours bitch!')
 
     if request.method == 'POST':
-        form = CompetitionForm(request.POST, instance=comp)
+        form = UpdateCompetitionForm(request.POST, instance=comp)
         if form.is_valid():
             form.save()
             return redirect('home')
@@ -71,7 +81,7 @@ def delete_page(request, pk):
 def login_page(request):
     page = 'login'
     if request.user.is_authenticated:
-        return redirect('')
+        return redirect('home')
     
     if request.method == 'POST':
         username = request.POST.get('username').lower()
@@ -85,7 +95,7 @@ def login_page(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             user.login(request, user)
-            return redirect('')
+            return redirect('home')
         else:
             messages.error(request, 'Access denied')
 
@@ -103,7 +113,7 @@ def register_user(request):
             user.username = user.username.lower()
             user.save()
             login(request, user)
-            return redirect('')
+            return redirect('home')
         
         else:
             messages.error(request, 'An error occured')
@@ -113,4 +123,4 @@ def register_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('')
+    return redirect('home')

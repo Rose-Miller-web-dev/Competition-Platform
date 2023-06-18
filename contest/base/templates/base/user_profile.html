@@ -1,0 +1,17 @@
+
+
+{% if award_count != 0 %}
+    <h3>{{ user.username }}'s wall of honors</h3>
+    {% for a in awards %}
+        <a href="{% url 'compinfo' a.competition.id %}">{{ a.competition.title }}</a>
+        <hr>
+    {% endfor %}
+{% endif %}
+
+<h4>Created Competitions</h4>
+
+{% for c_c in created_competitions %}
+    <a href="{% url 'compinfo' c_c.id %}">{{ c_c.title }}</a>
+    <p>{{ c_c.description }}</p>
+    <hr>
+{% endfor %}

@@ -6,3 +6,11 @@
 
 <h2>{{ competition.title }}</h2>
 <p>{{ competition.description }}</p>
+
+{% for c in comments %}
+    <p>
+        <h5>@{{ c.user.username }}</h5>
+        {{ c.body }}
+    </p>
+    <hr>
+{% endfor %}
