@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -25,7 +25,16 @@ def home(request):
 
 def compinfo(request, pk):
     room = Competition.objects.get(id=pk)
-    comments = room.comment_set.all()
+    comments = room.comment_set.all().order_by('-created')
+    comment_count = comments.count()
+
+    if request.method == 'POST':
+        new_comment = Comment.objects.create(
+            user = request.user,
+            competition = room,
+            body = request.POST.get('body')
+        )
+
     context = {'competition': room, 'comments': comments}
     return render(request, 'base/room.html', context)
 
@@ -94,7 +103,7 @@ def login_page(request):
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            user.login(request, user)
+            login(request, user)
             return redirect('home')
         else:
             messages.error(request, 'Access denied')
@@ -124,3 +133,12 @@ def register_user(request):
 def logout_user(request):
     logout(request)
     return redirect('home')
+
+def delete_comment(request, pk):
+    comment = Comment.objects.get(id=pk)
+
+    if request.method == 'POST':
+        comment.delete()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    context = {'comment': comment}
+    return render(request, 'base/delete_comment.html', context)
