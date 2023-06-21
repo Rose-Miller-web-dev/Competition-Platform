@@ -23,8 +23,11 @@ class Competition(models.Model):
     topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=200)
     description = models.TextField()
-    #competitors = 
+    competitors = models.ManyToManyField(User, related_name="competitors")
     status = models.BooleanField(default=False)
+    price = models.FloatField(default=0)
+    is_paid = models.BooleanField(default=False)
+    score = models.IntegerField(default=0)
     #lecture = 
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)

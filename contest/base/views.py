@@ -27,6 +27,7 @@ def compinfo(request, pk):
     room = Competition.objects.get(id=pk)
     comments = room.comment_set.all().order_by('-created')
     comment_count = comments.count()
+    competitors = room.competitors.all()
 
     if request.method == 'POST':
         new_comment = Comment.objects.create(
@@ -35,8 +36,30 @@ def compinfo(request, pk):
             body = request.POST.get('body')
         )
 
-    context = {'competition': room, 'comments': comments}
+    context = {'competition': room, 'comments': comments, 'competitors': competitors}
     return render(request, 'base/room.html', context)
+
+def register_competition(request, pk):
+    comp = Competition.objects.get(id=pk)
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        try:
+            user = User.objects.get(username=username)
+        except:
+            messages.error(request, 'User does not exist')
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            messages.error(request, 'Welcome to the competition!')
+            comp.competitors.add(request.user)
+            return redirect('compinfo', pk)
+        else:
+            messages.error(request, 'There is such a user')
+
+    context = {'comp': comp}
+    return render(request, 'base/register_comp.html', context) 
 
 def user_profile(request, pk):
     user = User.objects.get(id=pk)

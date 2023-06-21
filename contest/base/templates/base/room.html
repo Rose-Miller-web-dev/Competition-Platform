@@ -4,35 +4,71 @@
 
 {% endblock %}
 
-<h2>{{ competition.title }}</h2>
-<p>{{ competition.description }}</p>
+<style>
+    .main-container {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+    }
 
-<div class="comment-container">
-    <form action="" method="POST">
-        {% csrf_token %}
+    .participant-container {
+        margin-left: 10%;
+    }
 
-        <input type="text" name="body">
-        <input type="submit" value="Comment">
-    </form>
-</div>
+</style>
 
-{% if comment_count != 0 %}
-    <h3>Comment Section</h3>
+<div class="main-container">
 
-    {% for c in comments %}
-        <small>
-            {{ c.created | timesince }} <br>
-            @{{ c.user.username }}
-        </small><br>
+    <div>
+        <h2>{{ competition.title }}</h2>
+        <p>{{ competition.description }}</p>
 
-        <p>
-            {{ c.body }}
-        </p>
+        <a href="{% url 'register_comp' competition.id %}">join the competition!</a>
 
-        {% if request.user == c.user %}
-            <a href="{% url 'delete_comment' c.id %}">delete comment</a>
+        <div class="comment-container">
+            <form action="" method="POST">
+                {% csrf_token %}
+
+                <input type="text" name="body">
+                <input type="submit" value="Comment">
+            </form>
+        </div>
+
+        {% if comment_count != 0 %}
+            <h3>Comment Section</h3>
+
+            {% for c in comments %}
+                <small>
+                    {{ c.created | timesince }} <br>
+                    @{{ c.user.username }}
+                </small><br>
+
+                <p>
+                    {{ c.body }}
+                </p>
+
+                {% if request.user == c.user %}
+                    <a href="{% url 'delete_comment' c.id %}">delete comment</a>
+                {% endif %}
+
+                <hr>
+            {% endfor %}
         {% endif %}
+    </div>
 
+    <div class="participant-conteiner">
+        <h3>Participants</h3>
         <hr>
-    {% endfor %}
-{% endif %}
+
+        <!--mikham vase sherekat konande ha score in comp ro neshoon bede-->
+        {% for c in competitors %}
+            <p>{{ c.username }}</p>
+            {% for a in c.competition_set %}
+                <small>{{ a.title }}</small>
+            {% endfor %}
+            <br>
+            <hr>
+        {% endfor %}
+
+    </div>
+
+</div>

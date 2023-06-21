@@ -1,0 +1,38 @@
+{% include 'navbar.html' %}
+
+{% if request.user.is_authenticated %}
+<div class="container">
+    <form action="" method="POST">
+        {% csrf_token %}
+        <label for="username">
+            your username: 
+        </label>
+        <input type="text" name="username">
+        <br>
+
+        <label for="password">
+            your username: 
+        </label>
+        <input type="password" name="password">
+        <br>
+
+        <label for="motivation">
+            why you wanna participate: 
+        </label>
+        <input type="text" name="motivation">
+
+        <br>
+        <label for="price">Price: $ {{ comp.price }}</label>
+        <br>
+        {% if comp.price > 0 %}
+        <a href="">Pay Now</a>
+        {% endif %}
+        <br>
+        <input type="submit" value="register">
+    </form>
+</div>
+{% else %}
+    <p>In order to participate in a competition you need to login to your account first!</p>
+    <p>If you do not have an account click <a href="{% url 'register_page' %}">SIGNUP</a></p>
+    <p>If you ALREADY have an account click <a href="{% url 'login_page' %}">LOGIN</a></p>
+{% endif %}
