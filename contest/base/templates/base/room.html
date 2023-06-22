@@ -62,13 +62,8 @@
         <!--mikham vase sherekat konande ha score in comp ro neshoon bede-->
         {% for c in competitors %}
             <p>{{ c.username }}</p>
-            {% for a in c.competition_set %}
-                <small>{{ a.title }}</small>
-            {% endfor %}
-            <br>
             <hr>
         {% endfor %}
 
     </div>
-
 </div>

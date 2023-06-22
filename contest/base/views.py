@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import Competition, Topic, Comment
+from .models import Competition, Topic, Comment, CustomUser
 from .forms import CreateCompetitionForm, UpdateCompetitionForm
 
 # Create your views here.
@@ -28,6 +28,7 @@ def compinfo(request, pk):
     comments = room.comment_set.all().order_by('-created')
     comment_count = comments.count()
     competitors = room.competitors.all()
+    myarray = []
 
     if request.method == 'POST':
         new_comment = Comment.objects.create(
@@ -36,7 +37,8 @@ def compinfo(request, pk):
             body = request.POST.get('body')
         )
 
-    context = {'competition': room, 'comments': comments, 'competitors': competitors}
+    context = {'competition': room, 'comments': comments,
+                'competitors': competitors, 'pk':pk}
     return render(request, 'base/room.html', context)
 
 def register_competition(request, pk):
@@ -46,14 +48,15 @@ def register_competition(request, pk):
         username = request.POST.get('username')
         password = request.POST.get('password')
         try:
-            user = User.objects.get(username=username)
+            user = CustomUser.objects.get(username=username)
         except:
             messages.error(request, 'User does not exist')
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
             messages.error(request, 'Welcome to the competition!')
-            comp.competitors.add(request.user)
+            
+            request.user.add(comp)
             return redirect('compinfo', pk)
         else:
             messages.error(request, 'There is such a user')
@@ -62,7 +65,7 @@ def register_competition(request, pk):
     return render(request, 'base/register_comp.html', context) 
 
 def user_profile(request, pk):
-    user = User.objects.get(id=pk)
+    user = CustomUser.objects.get(id=pk)
     awards = user.award_set.all()
     award_count = awards.count()
     created_competitions = user.competition_set.all()
@@ -120,7 +123,7 @@ def login_page(request):
         password = request.POST.get('password')
 
         try:
-            user = User.objects.get(username=username)
+            user = CustomUser.objects.get(username=username)
         except:
             messages.error(request, 'User does not exist')
 
