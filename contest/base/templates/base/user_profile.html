@@ -1,17 +1,38 @@
+{% include 'navbar.html' %}
 
+<style>
+    .body-container {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+    }
 
-{% if award_count != 0 %}
-    <h3>{{ user.username }}'s wall of honors</h3>
-    {% for a in awards %}
-        <a href="{% url 'compinfo' a.competition.id %}">{{ a.competition.title }}</a>
-        <hr>
-    {% endfor %}
-{% endif %}
+</style>
 
-<h4>Created Competitions</h4>
+<h2>{{ pre_user.username }}'s</h2>
+<hr>
+<p>{{ c_user.bio }}</p>
 
-{% for c_c in created_competitions %}
-    <a href="{% url 'compinfo' c_c.id %}">{{ c_c.title }}</a>
-    <p>{{ c_c.description }}</p>
-    <hr>
-{% endfor %}
+<div class="body-container">
+    <div class="part-container">
+        {% if comps_count != 0 %}
+            <h3>Participateds</h3>
+            <br>
+            {% for c in comps %}
+                <a href="{% url 'compinfo' c.id %}"><h5>{{ c.title }}</h5></a>
+                <hr>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="host-container">
+        <h3>Hosted Competitions:</h3><br>
+        {% for c in all_comps %}
+            {% if c.host == pre_user %}
+                <h5>{{ c.title }}</h5><br>
+                <p>{{ c.description }}</p>
+                <hr>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+</div>

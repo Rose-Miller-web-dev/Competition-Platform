@@ -55,22 +55,24 @@ def register_competition(request, pk):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             messages.error(request, 'Welcome to the competition!')
-            
+            comp.competitors.add(request.user)
             request.user.add(comp)
             return redirect('compinfo', pk)
         else:
             messages.error(request, 'There is such a user')
 
-    context = {'comp': comp}
+    comps = request.user.competitions.all()
+    comps_count = comps.count()
+    context = {'comp': comp, 'comps': comps}
     return render(request, 'base/register_comp.html', context) 
 
 def user_profile(request, pk):
-    user = CustomUser.objects.get(id=pk)
-    awards = user.award_set.all()
-    award_count = awards.count()
-    created_competitions = user.competition_set.all()
-    context = { 'user': user, 'awards': awards, 'created_competitions': created_competitions,
-               'award_count': award_count }
+    all_comps = Competition.objects.all()
+    pre_user = User.objects.get(id=pk)
+    c_user = CustomUser.objects.get(user=pre_user)
+    comps = c_user.competitions.all()
+    comps_count = comps.count()
+    context = { 'pre_user': pre_user, 'comps': comps, 'c_user': c_user, 'all_comps': all_comps}
     
     return render(request, 'base/user_profile.html', context)
 

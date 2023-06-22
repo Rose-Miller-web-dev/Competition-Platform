@@ -64,7 +64,7 @@ class CustomUser(models.Model):
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     bio = models.TextField(max_length=800)
     is_host = models.BooleanField(default=False)
-    sompetitions = models.ManyToManyField(Competition, null=True)
+    competitions = models.ManyToManyField(Competition, null=True)
     comments = models.ManyToManyField(Comment, null=True)
 
     updated = models.DateTimeField(auto_now=True)
