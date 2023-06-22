@@ -18,17 +18,22 @@ def home(request):
                                               Q(title__icontains=q) |
                                               Q(description__icontains=q))
 
+    comments = Comment.objects.filter(Q(competition__title__icontains=q) |
+                                      Q(competition__title__icontains=q) |
+                                      Q(body__icontains=q))
+
     comp_count = competitions.count()
     topic = Topic.objects.all()
-    context = {'competitions': competitions, 'topic': topic, 'cc': comp_count}
+    context = {'competitions': competitions, 'topic': topic, 'cc': comp_count, 'comments': comments}
     return render(request, 'base/home.html', context)
+
+
 
 def compinfo(request, pk):
     room = Competition.objects.get(id=pk)
     comments = room.comment_set.all().order_by('-created')
     comment_count = comments.count()
     competitors = room.competitors.all()
-    myarray = []
 
     if request.method == 'POST':
         new_comment = Comment.objects.create(
@@ -167,6 +172,6 @@ def delete_comment(request, pk):
 
     if request.method == 'POST':
         comment.delete()
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        #return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     context = {'comment': comment}
     return render(request, 'base/delete_comment.html', context)

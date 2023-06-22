@@ -1,24 +1,41 @@
+<style>
+    .main-container {
+        display: flex;
+    }
 
-<a href="/">
-    <h1>Coursera</h1>
-</a>
+    form {
+        display: flex;
+    }
 
-<form action="{% url 'home' %}" method="GET">
-    <input type="text" name="q" placeholder="Search Competitions...">
-</form>
+    input {
+        margin-left: 10%;
+        margin-right: 10%;
+    }
 
-<ul>
-    {% if request.user.is_authenticated %}
-    <p>Hi {{ request.user.username }}</p>
-    <li>
-        <a href="{% url 'logout_user' %}">Logout</a>
-    </li>
-    {% else %}
-    <li>
-        <a href="login/">Login</a>
-    </li>
-    {% endif %}
-</ul>
+</style>
+
+<div class="main-container">
+    <a href="/">
+        <h1>Coursera</h1>
+    </a>
+    
+    <form action="{% url 'home' %}" method="GET">
+        <input type="text" name="q" placeholder="Search Competitions...">
+    </form>
+    
+    <ul>
+        {% if request.user.is_authenticated %}
+        <p>Hi {{ request.user.username }}</p>
+        <li>
+            <a href="{% url 'logout_user' %}">Logout</a>
+        </li>
+        {% else %}
+        <li>
+            <a href="login/">Login</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
 
 {% block content %}
 

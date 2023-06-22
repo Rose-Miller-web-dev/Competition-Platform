@@ -1,0 +1,4 @@
+{% for t in topic %}
+    <a href="{% url 'home' %}?q={{t.name}}">{{ t.name }}</a>
+    <br><br>
+{% endfor %}

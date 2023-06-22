@@ -1,0 +1,12 @@
+<p>{{ cc }} competitions are available</p><br>
+
+        {% for c in competitions %}
+
+            <h3> <a href="{% url 'compinfo' c.id %}">{{ c.title }}</a> </h3>
+            <p>created by <a href="{% url 'user_profile' c.host.id %}">{{ c.host.username }}</a></p>
+            {% if request.user == c.host %}
+                    <a href="{% url 'update-comp' c.id %}">edit </a> &nbsp;&nbsp;&nbsp;
+                    <a href="{% url 'delete' c.id %}">delete</a>
+            {% endif %}
+            <hr>
+        {% endfor %}

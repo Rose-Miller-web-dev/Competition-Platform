@@ -4,7 +4,7 @@ from .models import Competition, CustomUser
 class UpdateCompetitionForm(ModelForm):
     class Meta:
         model = Competition
-        fields = ['topic', 'title', 'description']
+        fields = ['topic', 'title', 'description', 'price']
 
 class CreateCompetitionForm(ModelForm):
     class Meta:
