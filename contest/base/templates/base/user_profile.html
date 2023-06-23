@@ -6,33 +6,46 @@
         grid-template-columns: 3fr 1fr;
     }
 
+    .main-container {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+    }
+
 </style>
 
 <h2>{{ pre_user.username }}'s</h2>
 <hr>
 <p>{{ c_user.bio }}</p>
 
-<div class="body-container">
-    <div class="part-container">
-        {% if comps_count != 0 %}
-            <h3>Participateds</h3>
-            <br>
-            {% for c in comps %}
-                <a href="{% url 'compinfo' c.id %}"><h5>{{ c.title }}</h5></a>
-                <hr>
-            {% endfor %}
-        {% endif %}
+<div class="main-container">
+    <div class="topic-container">
+        <h2>Topics</h2>
+        {% include 'base/topics.html' %}
     </div>
-
-    <div class="host-container">
-        <h3>Hosted Competitions:</h3><br>
-        {% for c in all_comps %}
-            {% if c.host == pre_user %}
-                <h5>{{ c.title }}</h5><br>
-                <p>{{ c.description }}</p>
-                <hr>
+    
+    <div class="body-container">
+        <div class="part-container">
+            {% if comps_count != 0 %}
+                <h3>Participateds</h3>
+                <br>
+                {% for c in comps %}
+                    <a href="{% url 'compinfo' c.id %}"><h5>{{ c.title }}</h5></a>
+                    <hr>
+                {% endfor %}
             {% endif %}
-        {% endfor %}
+        </div>
+    
+        <div class="host-container">
+            <h3>Hosted Competitions:</h3><br>
+            {% for c in all_comps %}
+                {% if c.host == pre_user %}
+                    <h5>{{ c.title }}</h5><br>
+                    <p>{{ c.description }}</p>
+                    <hr>
+                {% endif %}
+            {% endfor %}
+        </div>
+    
     </div>
-
 </div>
+

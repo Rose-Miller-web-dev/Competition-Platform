@@ -2,7 +2,7 @@
             <div class="comment-container">
                 <h3>Recent Comments</h3> <br>
                 {% for comment in comments %}
-                    @{{ comment.user.username }} commented 
+                    <a href="{% url 'user_profile' comment.user.id %}">@{{ comment.user.username }}</a> commented 
                     {{ comment.body }} {{ comment.created | timesince }} ago
 
                     {% if request.user == comment.user %}
@@ -18,7 +18,7 @@
             <div class="comp-container">
                 <h3>Recent Competitions</h3> <br>
                 {% for comp in competitions %}
-                    @{{ comp.host.username }} created 
+                <a href="{% url 'user_profile' comp.host.id %}">@{{ comp.host.username }}</a> created 
                     {{ comp.title }} {{ comp.created | timesince }} ago
                     <br>
 

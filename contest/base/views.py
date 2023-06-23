@@ -72,12 +72,18 @@ def register_competition(request, pk):
     return render(request, 'base/register_comp.html', context) 
 
 def user_profile(request, pk):
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    topic = Topic.objects.all()
     all_comps = Competition.objects.all()
     pre_user = User.objects.get(id=pk)
     c_user = CustomUser.objects.get(user=pre_user)
-    comps = c_user.competitions.all()
+    comps = c_user.competitions.filter(Q(topic__name__icontains=q) |
+                                       Q(description__icontains=q) |
+                                       Q(title__icontains=q))
+    
     comps_count = comps.count()
-    context = { 'pre_user': pre_user, 'comps': comps, 'c_user': c_user, 'all_comps': all_comps}
+    context = { 'pre_user': pre_user, 'comps': comps, 'c_user': c_user, 'all_comps': all_comps
+               , 'topic': topic}
     
     return render(request, 'base/user_profile.html', context)
 
