@@ -1,0 +1,57 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<style>
+    .main_container {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+    }
+
+    .container{
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
+    }
+
+    .room_container {
+        margin-left: 0%;
+        margin-right: 5%;
+    }
+
+    .recent-act-container {
+        margin-right: 10%;
+    }
+
+</style>
+
+<div class="main_container">
+    <div class="search_bar">
+        <h2>Browse Courses</h2>
+        <hr>
+        {% include 'base/topics.html' %}
+    </div>
+    
+    <div class="container">
+    
+        <div class="action_container">
+            <ul>
+                <li>
+                    <a href="{% url 'create-comp' %}">Create Competition</a>
+                </li>
+            </ul>
+        </div>
+    
+        <div class="room_container">
+            {% include 'base/feed.html' %}
+        </div>
+
+        <div class="recent-act-container">
+
+            {% include 'base/activities.html' %}
+
+        </div>
+    
+    </div>
+</div>
+
+{% endblock %}

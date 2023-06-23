@@ -1,5 +1,6 @@
-{% include 'navbar.html' %}
+{% extends 'main.html' %}
 
+{% block content %}
 <form action="" method="POST">
     {% csrf_token %}
     <p>Are you sure that you wanna delete {{ object }}?</p>
@@ -8,3 +9,4 @@
 
     <a href="{{ request.META.HTTP_REFERER }}">Go Back</a>
 </form>
+{% endblock %}

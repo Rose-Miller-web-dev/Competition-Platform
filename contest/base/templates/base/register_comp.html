@@ -1,5 +1,6 @@
-{% include 'navbar.html' %}
+{% extends 'main.html' %}
 
+{% block content %}
 {% if request.user.is_authenticated %}
 <div class="container">
     <form action="" method="POST">
@@ -36,3 +37,5 @@
     <p>If you do not have an account click <a href="{% url 'register_page' %}">SIGNUP</a></p>
     <p>If you ALREADY have an account click <a href="{% url 'login_page' %}">LOGIN</a></p>
 {% endif %}
+
+{% endblock %}

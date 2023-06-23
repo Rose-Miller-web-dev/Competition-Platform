@@ -10,3 +10,4 @@ class CreateCompetitionForm(ModelForm):
     class Meta:
         model = Competition
         fields = '__all__'
+        exclude = ['host', 'competitors']

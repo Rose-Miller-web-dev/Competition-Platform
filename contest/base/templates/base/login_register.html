@@ -1,5 +1,6 @@
-{% include 'navbar.html' %}
+{% extends 'main.html' %}
 
+{% block content %}
 <div class="container">
     {% if page == 'login' %}
         <form action="" method="POST">
@@ -44,3 +45,5 @@
     {% endif %}
     
 </div>
+
+{% endblock %}

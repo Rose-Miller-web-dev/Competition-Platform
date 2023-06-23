@@ -27,8 +27,6 @@ def home(request):
     context = {'competitions': competitions, 'topic': topic, 'cc': comp_count, 'comments': comments}
     return render(request, 'base/home.html', context)
 
-
-
 def compinfo(request, pk):
     room = Competition.objects.get(id=pk)
     comments = room.comment_set.all().order_by('-created')
@@ -94,6 +92,8 @@ def create_competition(request):
     if request.method == 'POST':
         form = CreateCompetitionForm(request.POST)
         if form.is_valid():
+            comp = form.save(commit=False)
+            comp.host = request.user
             form.save()
             return redirect('home')
     context = {'form': form}
