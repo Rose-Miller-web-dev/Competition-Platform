@@ -6,11 +6,43 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from paypal.standard.forms import PayPalPaymentsForm
+from django.conf import settings
+import uuid
+from django.urls import reverse
 
 from .models import Competition, Topic, Comment, CustomUser
 from .forms import CreateCompetitionForm, UpdateCompetitionForm
 
 # Create your views here.
+
+def paypalPage(request, pk):
+    comp = Competition.objects.get(id=pk)
+    price = comp.price
+    host = request.get_host()
+    paypal_dict = {
+            "business": settings.PAYPAL_RECEIVER_EMAIL,
+            "amount": str(price),
+            "item_name": "course#2",
+            "invoice": str(uuid.uuid4()),
+            "currency_code": 'USD',
+            "notify_url": f'http://{host}{reverse("paypal-ipn")}',
+            "return_url": f'http://{host}{reverse("paypal-reverse")}',
+            "cancel_return": f'http://{host}{reverse("paypal-cancel")}',
+        }
+
+    # Create the instance.
+    form = PayPalPaymentsForm(initial=paypal_dict)
+    context = {"form": form}
+    return render(request, "base/paypal.html", context)
+
+def paypal_reverse(request):
+    messages.success(request ,'The payment action was successful!')
+    return redirect('home')
+
+def paypal_cancel(request):
+    messages.error(request, 'The payment action failed!')
+    return redirect('home')
 
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
@@ -181,3 +213,4 @@ def delete_comment(request, pk):
         #return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     context = {'comment': comment}
     return render(request, 'base/delete_comment.html', context)
+

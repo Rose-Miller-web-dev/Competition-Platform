@@ -9,6 +9,8 @@
                     <a href="{% url 'update-comp' c.id %}">edit </a> &nbsp;&nbsp;&nbsp;
                     <a href="{% url 'delete' c.id %}">delete</a>
             {% endif %}
+            <br>
+            <a href="{% url 'paypal_page' c.id %}"><button class="btn">Participate</button></a>
             <hr>
         {% endfor %}
 

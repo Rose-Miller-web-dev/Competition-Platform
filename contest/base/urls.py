@@ -13,4 +13,7 @@ urlpatterns = [
     path('user/<str:pk>', views.user_profile, name="user_profile"),
     path('delete_comment/<str:pk>/', views.delete_comment, name="delete_comment"),
     path('register_comp/<str:pk>/', views.register_competition, name="register_comp"),
+    path('payment_paypal/<str:pk>', views.paypalPage, name="paypal_page"),
+    path('paypal-reverse', views.paypal_reverse, name="paypal-reverse"),
+    path('paypal-cancel', views.paypal_cancel, name="paypal-cancel"),
 ]
